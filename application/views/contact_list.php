@@ -81,6 +81,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
           <th scope="col"></th>
           <th scope="col">First name</th>
           <th scope="col">Last name</th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -96,19 +97,70 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <td><img src="https://www.gravatar.com/avatar/<?php echo $img;?>" /></td>
             <td><?php echo $row['firstName']; ?></td>
             <td><?php echo $row['lastName']; ?></td>
+            <td><a href="javascript:;" class="btn btn-info item-detail view_data" id="<?php echo $row['id'] ?>">click here for more details</a></td>
           </tr>
           <?php
           $i++;
         } ?>
       </tbody>
     </table>
-  </div>
+   <!-- view Modal -->
+    <div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true" style="margin-top: -20px;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Contact Details</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Place to print the fetched record -->
+                    <div id="contact_result"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+ </div>
 <!-- jQuery JS CDN -->
- <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script> 
- <!-- jQuery DataTables JS CDN -->
- <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
- <!-- Bootstrap JS CDN -->
- <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
-
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script> 
+<!-- jQuery DataTables JS CDN -->
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<!-- Bootstrap JS CDN -->
+<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+<!-- Bootstrap JS CDN -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> 
+<script type="text/javascript">
+  // Start jQuery function after page is loaded
+    $(document).ready(function(){
+      // Initiate DataTable function comes with plugin
+      $('#dataTable').DataTable();
+      // Start jQuery click function to view Bootstrap modal when view info button is clicked
+      $('.view_data').click(function(){
+        // Get the id of selected phone and assign it in a variable called phoneData
+        var id = $(this).attr('id');
+        // Start AJAX function
+        $.ajax({
+        // Path for controller function which fetches selected phone data
+        url: "<?php echo base_url() ?>index.php/Contacts/getdata",
+        // Method of getting data
+        method: "POST",
+        // Data is sent to the server
+        data: {id:id},
+        
+        // Callback function that is executed after data is successfully sent and recieved
+        success: function(data){
+        // Print the fetched data of the contact in the section called #contact_result 
+        // within the Bootstrap modal
+        $('#contact_result').html(data);
+        // Display the Bootstrap modal
+        $('#contactModal').modal('show');
+        }
+        });
+        // End AJAX function
+      });
+    });  
+</script>
 </body>
 </html>
